@@ -8,16 +8,28 @@
         <script src="bundle.js"></script>
         <script src="v3.js"></script>
         <h1>Interrail Rechner</h1>
-        <div style="display: inline;">
-            <textarea id="cities" name="message" rows="10" cols="30">Braunschweig\nWarschau</textarea>
+        <div>
+            <div style="display: inline;">
+                <textarea id="cities" name="message" rows="20" cols="30">Ziele eingeben!</textarea>
+            </div>
+            <div style="display: inline;">
+                <textarea id="departure" name="message" rows="20" cols="30">Abfahrtszeiten eingeben!</textarea>
+            </div>
+            <!--
+                <div style="display: inline; width: 200px;">
+                <p id="progress" style="width: 200px;">Bitte Eingabe machen!</p>
+                </div>
+            -->
+            
+            <div style="display: inline;">
+                <textarea id="progress" name="progress" rows="20" cols="50">Progress</textarea>
+            </div>
+            <div style="display: inline;">
+                <button type="button" onclick="calculate()" style="padding: 10px; background-color: green; border-radius: 5px; color: white; padding: 5px; border-color: white;">Route berechnen!</button>
+            </div>
         </div>
-        <div style="display: inline;">
-            <textarea id="departure" name="message" rows="10" cols="30">Braunschweig\nWarschau</textarea>
-        </div>
-        <div style="height: 50px; padding: 25px;">
-            <p id="progress">Bitte Eingabe machen!</p>
-        </div>
-        <button type="button" onclick="calculate()">Route berechnen!</button>
+        
+        
         <br>
         <table class="journey" id="journey">
             <thead>
