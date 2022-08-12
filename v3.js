@@ -4,7 +4,7 @@ function defaultValues(){
     // Cookie erstellen
     if(document.cookie.length == 0){
         console.log('No cookie found!')
-        document.cookie = "username=John Doe";//'Braunschweig Hbf\nWarsaw Centralna\nWien;2022-09-19T06:00:00+0200\n2022-09-21T06:00:00+0200'
+        document.cookie = 'Braunschweig Hbf\nWarsaw Centralna\nWien;2022-09-19T06:00:00+0200\n2022-09-21T06:00:00+0200'
     }
     console.log(document.cookie)
     // Daten aus Cookie extrahieren
@@ -34,6 +34,7 @@ async function fetchStation(name){
 async function calculate() {
     const destinations = document.getElementById('cities').value.split('\n')
     const departures = document.getElementById('departure').value.split('\n')
+    document.cookie = (document.getElementById('cities').value + ';' + document.getElementById('departure').value)
     document.getElementById('progress').innerHTML = '<img src="https://1.bp.blogspot.com/-rVj7BQjJDrs/YHQV88_S7UI/AAAAAAAAD9o/eZqJQ7RNlY4h366-SfnuAuQHfOCV0S1wACLcBGAsYHQ/s640/Sequence%2B02.gif" style="height: 50px;"/>'
     //console.log(destinations)
     let ids = []
