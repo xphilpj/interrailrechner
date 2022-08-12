@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body onload="defaultValues()">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="bundle.js"></script>
+        <script src="v3.js"></script>
+        <h1>Interrail Rechner</h1>
+        <div style="display: inline;">
+            <textarea id="cities" name="message" rows="10" cols="30">Braunschweig\nWarschau</textarea>
+        </div>
+        <div style="display: inline;">
+            <textarea id="departure" name="message" rows="10" cols="30">Braunschweig\nWarschau</textarea>
+        </div>
+        <div style="height: 50px; padding: 25px;">
+            <p id="progress">Bitte Eingabe machen!</p>
+        </div>
+        <button type="button" onclick="calculate()">Route berechnen!</button>
+        <br>
+        <table class="journey" id="journey">
+            <thead>
+                <tr></tr> <!-- <th>Train 1</th><th>Train 2</th><th>Train 3</th><th>Train 4</th><th>Train 5</th><th>Train 6</th>-->
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </body>
+</html>
