@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Dein Interrail-Rechner</title>
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+            integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+            crossorigin=""/>
+        <meta charset="UTF-8">
     </head>
-    <body onload="defaultValues()">
+    <body onload="defaultValues()" style="width: 100%;">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="bundle.js"></script>
         <script src="v3.js"></script>
+        <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+            integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+            crossorigin=""></script>
         <h1>Interrail Rechner</h1>
-        <div>
-            <div style="display: inline;">
-                <textarea id="cities" name="message" rows="20" cols="30">Ziele eingeben!</textarea>
+        <div style="width: 100%;">
+            <div id="citiesdiv">
+                <textarea id="cities" name="message" rows="20" cols="20">Ziele eingeben!</textarea>
             </div>
-            <div style="display: inline;">
-                <textarea id="departure" name="message" rows="20" cols="30">Abfahrtszeiten eingeben!</textarea>
+            <div id="timesdiv">
+                <textarea id="departure" name="message" rows="20" cols="24">Abfahrtszeiten eingeben!</textarea>
             </div>
-            <!--
-                <div style="display: inline; width: 200px;">
-                <p id="progress" style="width: 200px;">Bitte Eingabe machen!</p>
+            <div id="logdiv">
+                <textarea id="progress" name="progress" rows="20" cols="60">Progress</textarea>
+            </div>
+            <div id="mapdiv">
+                <div id="map">
+
                 </div>
-            -->
-            
-            <div style="display: inline;">
-                <textarea id="progress" name="progress" rows="20" cols="50">Progress</textarea>
             </div>
-            <div style="display: inline;">
-                <button type="button" onclick="calculate()" style="padding: 10px; background-color: green; border-radius: 5px; color: white; padding: 5px; border-color: white;">Route berechnen!</button>
-            </div>
+        </div>
+        <div >
+            <button type="button" onclick="calculate()" style="padding: 10px; background-color: green; border-radius: 5px; color: white; padding: 5px; border-color: white;">Route berechnen!</button>
+            <button type="button" onclick="drawMap()" style="padding: 10px; background-color: green; border-radius: 5px; color: white; padding: 5px; border-color: white;">Map erstellen!</button>
         </div>
         
         
