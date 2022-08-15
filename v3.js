@@ -109,7 +109,9 @@ async function calculate() {
                 let timearrival = content[j]['arrival'].split('T')
                 const citydeparture = content[j]['origin']['name']
                 const cityarrival = content[j]['destination']['name']
+                //console.log(content[j]['destination']['location']['longitude'], typeof(content[j]['destination']['location']['longitude']))
                 const destination_long = parseFloat(content[j]['destination']['location']['longitude'])
+                //console.log(destination_long)
                 const destination_lat = parseFloat(content[j]['destination']['location']['latitude'])
                 destinations_long.push(destination_long)
                 destinations_lat.push(destination_lat)
@@ -119,9 +121,18 @@ async function calculate() {
                 let lat2 = destinations_lat[destinations_lat.length-1]
                 let long1 = destinations_long[destinations_long.length-2]
                 let long2 = destinations_long[destinations_long.length-1]
-                let distanz = Math.round(111.324 * Math.acos(Math.sin(lat1)*Math.sin(lat2) + Math.cos(lat1)*Math.cos(lat2)*Math.cos(Math.abs(long2-long1))), 1)
-                //console.log(distanz)
-                
+                let deltalat = lat2-lat1
+                let deltalong = long2-long1
+                const rf = Math.PI/180 // RadiansFaktor
+                var R = 6371; // km
+                var dLat = (lat2-lat1)*rf;
+                var dLon = (long2-long1)*rf;
+                lat1 = lat1*rf;
+                lat2 = lat2*rf;
+                var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+                distanz = Math.round(R * c);
+
                 // Zeitberechnung
                 const daydep = parseInt(timedeparture[0].slice(8,10))
                 const dayarr = parseInt(timearrival[0].slice(8,10))
@@ -147,11 +158,11 @@ async function calculate() {
                 
                 traveltimehour += deltahour
                 traveltimeminute += deltaminute
-                const fahrzeit = (deltahour + ':' + deltaminute)
+                const fahrzeit = (deltahour + 'h' + deltaminute)
                 const geschwindigkeit = Math.round(distanz / (deltahour +  (deltaminute/60)), 0)
 
                 //console.log('Days:'+deltaday+'Hours:'+deltahour+'Minutes:'+deltaminute)
-                route2 += ('<td><h3>' + trainname + '</h3>Von ' + citydeparture + '<br>Abfahrt am ' + timedeparture[0] + ' um ' + timedeparture[1].slice(0,5) + '<br>Nach ' + cityarrival + '<br>Ankunft am ' + timearrival[0] + ' um ' + timearrival[1].slice(0,5) + '<br>Distanz: ' + distanz + 'km in ' + fahrzeit + '(' + geschwindigkeit + '<sup>km</sup>/<sub>h</sub>)</td>')
+                route2 += ('<td><h3>' + trainname + '</h3>Von ' + citydeparture + '<br>Abfahrt am ' + timedeparture[0] + ' um ' + timedeparture[1].slice(0,5) + '<br>Nach ' + cityarrival + '<br>Ankunft am ' + timearrival[0] + ' um ' + timearrival[1].slice(0,5) + '<br>Distanz: ' + distanz + 'km in ' + fahrzeit + 'm (' + geschwindigkeit + '<sup>km</sup>/<sub>h</sub>)</td>')
             }
             while(traveltimeminute >= 60){
                 traveltimehour += 1
