@@ -16,26 +16,39 @@
             integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
             crossorigin=""></script>
         <h1>Interrail Rechner</h1>
-        <div style="width: 100%;">
-            <div id="citiesdiv">
-                <textarea id="cities" name="message" rows="20" cols="20">Ziele eingeben!</textarea>
+        <div style="width: auto; height: auto; backgroud-color: lightgrey;">
+            <button type="button" class="button" onclick="calculate()" style="background-color: green;">Route berechnen!</button>
+            <button type="button" class="button" onclick="setDemoRoute('long')" style="background-color: grey;">Lange Route laden</button>
+            <button type="button" class="button" onclick="setDemoRoute('short')" style="background-color: grey;">Kurze Route laden</button>
+        </div>
+        <div style="width: 100%; height: 450px;">
+            <div class="input">
+                <div id="citiesdiv">
+                    <h3>Zieleingabe</a></h3>
+                    <textarea onkeypress="updateDestinations()" id="cities" name="message" rows="18" cols="20" style="font-size: 16px;">Ziele eingeben!</textarea>
+                </div>
             </div>
-            <div id="timesdiv">
-                <textarea id="departure" name="message" rows="20" cols="24">Abfahrtszeiten eingeben!</textarea>
+            
+            <div class="input">
+                <div id="timesdiv">
+                    <h3>Abfahrtszeiten</h3>    
+                </div>                    
             </div>
-            <div id="logdiv">
-                <textarea id="progress" name="progress" rows="20" cols="60">Progress</textarea>
-            </div>
-            <div id="mapdiv">
+            <div class="input" id="mapdiv">
+                <h3>Map</h3>
                 <div id="map">
 
                 </div>
             </div>
+            <div class="input">
+                <h3>Log</h3>
+                <div id="progress">
+                    Fortschrittslog wird hier angezeigt.<br>
+                    <!--<textarea id="progress" name="progress" rows="20" cols="60">Progress</textarea>-->
+                </div>
+            </div>
         </div>
-        <div >
-            <button type="button" onclick="calculate()" style="padding: 10px; background-color: green; border-radius: 5px; color: white; padding: 5px; border-color: white;">Route berechnen!</button>
-            <button type="button" onclick="drawMap()" style="padding: 10px; background-color: green; border-radius: 5px; color: white; padding: 5px; border-color: white;">Map erstellen!</button>
-        </div>
+        
         
         
         <br>

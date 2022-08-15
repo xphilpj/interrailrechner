@@ -13,33 +13,63 @@ h3 {
     font-family: verdana;
     font-size: 110%;
 }
+h3 {
+    color: darkslategray;
+    font-family: verdana;
+    font-size: 100%;
+}
 p {
     color: grey;
     font-family: Arial;
     font-size: 100%;
+}
+td {
+    padding: 2px;
 }
 body {
     color: black;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 100%;
 }
-#map {
-    height: 400px;
-    width: 400px;
-}
-#mapdiv {
-    display: inline;
-    width: 30%;
-}
 #citiesdiv {
-    display: inline;
-    width: 15%;
+    min-width: 170px;
 }
 #timesdiv {
-    display: inline;
-    width: 15%;
+    min-width: 220px;
 }
-#logdiv {
+#progress {
+    width: 400px;
+    height: 350px;
+    overflow: auto;
+}
+#mapdiv {
+    
+}
+#map {
+    height: 350px;
+    width: 700px;
+    margin: 1px;
+    padding: 1px;
+}
+.button{
+    padding: 20px;
+    color: white;
+    padding: 5px;
+    border: 0;
+    margin-left: 20px;
+}
+.input{
     display: inline;
-    width: 15%;
+    float: left;
+    padding: 10px;
+    width: auto;
+    height: 410px;
+    margin: 2px;
+    vertical-align: top;
+    background-color: #e7e7e7;
+}
+.datepicker{
+    height: 15px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
