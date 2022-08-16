@@ -27,7 +27,7 @@ function defaultValues(){
         console.log('No cookie found!')
         document.cookie = 'cities=Braunschweig Hbf\nWarsaw Centralna\nWien;deps=2022-09-19T06:00:00+0200\n2022-09-21T06:00:00+0200'
     }
-    //console.log(document.cookie)
+    
     // Daten aus Cookie extrahieren
     listCities = document.cookie.split(';')[0]
     listTimes = document.cookie.split(';')[1]
@@ -58,32 +58,35 @@ async function fetchStation(name){
 }
 
 async function calculate() {
+    // Variablen erstellen
+    let log = document.getElementById('progress').innerHTML
+    let destinations_long = []
+    let destinations_lat = []
+    let ids = []
+    let route = ''
+
     // Checken, ob Zeiten abgegeben wurden
     const updatereq = (destinations.length==document.getElementById('cities').value.split('\n').length)
-    console.log(updatereq)
+    console.log(destinations.length)
     if(destinations.length != document.getElementById('cities').value.split('\n').length){
         console.log('Updating Timepickers')
         updateDestinations();
         return null
     }
-    let log = document.getElementById('progress').innerHTML
-
+    
     // Arrays (Orte & Zeiten) updaten
     destinations = document.getElementById('cities').value.split('\n')
     for(let i=0; i<destinations.length; i++){
         const requiredid = ('dep' + i)
         departures.push(document.getElementById(requiredid).value)
     }
-    //departures = document.getElementById('departure').value.split('\n')
-    let destinations_long = []
-    let destinations_lat = []
+
+    // Textausgabe
     log += 'Berechnung läuft...<br>'
-    document.getElementById('progress').innerHTML = log//'Berechnung läuft...'
+    document.getElementById('progress').innerHTML = log
     document.title = 'Berechnung läuft...'
-    //document.cookie = (document.getElementById('cities').value + ';' + document.getElementById('departure').value)
-    //document.getElementById('progress').innerHTML = '<img src="https://1.bp.blogspot.com/-rVj7BQjJDrs/YHQV88_S7UI/AAAAAAAAD9o/eZqJQ7RNlY4h366-SfnuAuQHfOCV0S1wACLcBGAsYHQ/s640/Sequence%2B02.gif" style="height: 50px;"/>'
-    let ids = []
-    let route = '' //[]
+    document.getElementById('but_calc').innerHTML = 'Daten werden abgerufen...'
+    
     for(let i=0; i<destinations.length; i++){
         let abc = await fetchStation(destinations[i]).then(data => {
             ids.push(data[0]['id']);
@@ -99,6 +102,7 @@ async function calculate() {
             let traveltimeminute = 0;
             let route2;
             log += ('(' + (i) + '/' + (destinations.length-1) +') Berechne Route ' + destinations[i-1] + ' nach ' + destinations[i] + '...<br>')
+            document.getElementById('but_calc').innerHTML = ('(' + (i) + '/' + (destinations.length-1) +') Berechne Route ' + destinations[i-1] + ' nach ' + destinations[i] + '...<br>')
             document.getElementById('progress').innerHTML = log 
             let response = await window.interrail.journeys(ids[ids.length-2],ids[ids.length-1], { when: new Date(departures[i-1])}).then(data => content = data[0]['legs'])
             console.log(content[0])
@@ -109,9 +113,7 @@ async function calculate() {
                 let timearrival = content[j]['arrival'].split('T')
                 const citydeparture = content[j]['origin']['name']
                 const cityarrival = content[j]['destination']['name']
-                //console.log(content[j]['destination']['location']['longitude'], typeof(content[j]['destination']['location']['longitude']))
                 const destination_long = parseFloat(content[j]['destination']['location']['longitude'])
-                //console.log(destination_long)
                 const destination_lat = parseFloat(content[j]['destination']['location']['latitude'])
                 destinations_long.push(destination_long)
                 destinations_lat.push(destination_lat)
@@ -161,7 +163,6 @@ async function calculate() {
                 const fahrzeit = (deltahour + 'h' + deltaminute)
                 const geschwindigkeit = Math.round(distanz / (deltahour +  (deltaminute/60)), 0)
 
-                //console.log('Days:'+deltaday+'Hours:'+deltahour+'Minutes:'+deltaminute)
                 route2 += ('<td><h3>' + trainname + '</h3>Von ' + citydeparture + '<br>Abfahrt am ' + timedeparture[0] + ' um ' + timedeparture[1].slice(0,5) + '<br>Nach ' + cityarrival + '<br>Ankunft am ' + timearrival[0] + ' um ' + timearrival[1].slice(0,5) + '<br>Distanz: ' + distanz + 'km in ' + fahrzeit + 'm (' + geschwindigkeit + '<sup>km</sup>/<sub>h</sub>)</td>')
             }
             while(traveltimeminute >= 60){
@@ -169,21 +170,18 @@ async function calculate() {
                 traveltimeminute -= 60
             }
             route1 = ('<tr style="background-color: #ededed; vertical-align: top;"><td><h3>#' + i + '</h3><h4>' + destinations[i-1] + ' → ' + destinations[i] + '</h4>Fahrzeit: ' + traveltimehour + ':' + traveltimeminute + '</td>')
-            //route += ('<td>' + content[0] + '</td><td>' + content[1]['line']['id'] + '</td><td>' + content[2]['line']['id'])
             route += (route1 + route2 + '</tr>')
-            //console.log(content[0])
-            
         }
         $('.journey tbody').html(route);
     }
-    //document.getElementById('textoutput').innerHTML = route
     $('.journey tbody').html(route);
     drawMap(destinations_long, destinations_lat)
+    document.getElementById('but_calc').innerHTML = 'Fertig!'
     log += 'Fertig!<br>'
     document.getElementById('progress').innerHTML = log
     var objDiv = document.getElementById("progress");
     objDiv.scrollTop = objDiv.scrollHeight;
-    //console.log(destinations)
+    document.getElementById('but_calc').innerHTML = 'Route berechnen!'
     document.title = 'Deine Reise mit ' + (destinations.length-2) + ' Städten'
 }
 
@@ -212,26 +210,35 @@ async function drawMap(long, lat){
 function setDemoRoute(selection){
     // Lange Option
     listCities = 'Braunschweig\nWarsaw\nWien\nZagreb\nSplit\nRoma\nNice\nBarcelona\nMadrid\nPorto\nLisbon\nMadrid\nToulouse\nParis\nBrussels\nAmsterdam\nBraunschweig'
-    listTimes = '2022-09-19T06:00:00+0200\n2022-09-21T06:00:00+0200\n2022-09-23T06:00:00+0200\n2022-09-25T06:00:00+0200\n2022-09-27T06:00:00+0200\n2022-09-29T06:00:00+0200\n2022-10-01T06:00:00+0200\n2022-10-03T06:00:00+0200\n2022-10-03T06:00:00+0200\n2022-10-05T06:00:00+0200\n2022-10-07T06:00:00+0200\n2022-10-09T06:00:00+0200\n2022-10-11T06:00:00+0200\n2022-10-13T06:00:00+0200\n2022-10-15T06:00:00+0200\n2022-10-19T06:00:00+0200\n2022-10-19T06:00:00+0200'
+    listTimes = ['2022-09-19T06:00','2022-09-21T06:00','2022-09-23T06:00','2022-09-25T06:00','2022-09-27T06:00','2022-09-29T06:00','2022-10-01T06:00','2022-10-03T06:00','2022-10-03T06:00','2022-10-05T06:00','2022-10-07T06:00','2022-10-09T06:00','2022-10-11T06:00','2022-10-13T06:00','2022-10-15T06:00','2022-10-19T06:00','2022-10-19T06:00']
 
     // Kurze Optionen
     slistCities = 'Braunschweig\nWarsaw\nWien\nBraunschweig'
-    slistTimes = '2022-09-19T06:00:00+0200\n2022-09-21T06:00:00+0200\n2022-09-23T06:00:00+0200\n2022-09-25T06:00:00+0200'
-
+    slistTimes = ['2022-09-19T06:00','2022-09-21T06:00','2022-09-23T06:00','2022-09-25T06:00']
+    
     // Füllen der Kästen
     var log = document.getElementById('progress').innerHTML
+    let datepickers = '<h3>Abfahrtszeiten</h3><table>'
 
     if(selection == 'long'){
         document.getElementById('cities').innerHTML = listCities
-        //document.getElementById('departure').innerHTML = listTimes
+        destinations = listCities
+        for(let i=0; i<listTimes.length; i++){
+            datepickers += '<tr><td>' + listCities.split('\n')[i] + '</td><td><input type="datetime-local" class="datepicker" id="dep' + i + '" value="' + listTimes[i] + '" min="2022-09-19T00:00" max="2022-10-19T23:59"></td></tr>'            
+        }
         log += 'Lange Route geladen.<br>'
     }
     else{
         document.getElementById('cities').innerHTML = slistCities
-        //document.getElementById('departure').innerHTML = slistTimes
+        destinations = slistCities
+        for(let i=0; i<slistTimes.length; i++){
+            datepickers += '<tr><td>' + slistCities.split('\n')[i] + '</td><td><input type="datetime-local" class="datepicker" id="dep' + i + '" value="' + slistTimes[i] + '" min="2022-09-19T00:00" max="2022-10-19T23:59"></td></tr>'            
+        }
         log += 'Kurze Route geladen.<br>'
     }
     updateDestinations()
+    datepickers += '</table>'
+    document.getElementById('timesdiv').innerHTML = datepickers
     document.getElementById('progress').innerHTML = log
     var objDiv = document.getElementById("progress");
     objDiv.scrollTop = objDiv.scrollHeight;
@@ -239,7 +246,7 @@ function setDemoRoute(selection){
 
 function updateDestinations(){
     destinations = document.getElementById('cities').value.split('\n')
-    let datepickers = '<h3>Abfahrtszeiten</h3>'
+    let datepickers = '<h3>Abfahrtszeiten</h3><table>'
     let month = '09'
     let day = 19
     for(let i=0; i<destinations.length; i++){
@@ -254,8 +261,9 @@ function updateDestinations(){
         else{
             tempday = day
         }
-        datepickers += '<input type="datetime-local" class="datepicker" id="dep' + i + '" value="2022-' + month + '-' + tempday + 'T06:00" min="2022-09-19T00:00" max="2022-10-19T23:59"><br>'
+        datepickers += '<tr><td>' + destinations[i] + '</td><td><input type="datetime-local" class="datepicker" id="dep' + i + '" value="2022-' + month + '-' + tempday + 'T06:00" min="2022-09-19T00:00" max="2022-10-19T23:59"></td></tr>'
         day += 1
     }
+    datepickers += '</table>'
     document.getElementById('timesdiv').innerHTML = datepickers
 }

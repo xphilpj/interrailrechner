@@ -2,13 +2,14 @@
 <html>
     <head>
         <title>Dein Interrail-Rechner</title>
+        <link rel="icon" href="https://www.interrail.eu//etc/designs/eurail/favicon/Eurail_Favicon_96px.png" sizes="96x96" type="image/png">
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
             integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
             crossorigin=""/>
         <meta charset="UTF-8">
     </head>
-    <body onload="defaultValues()" style="width: 100%;">
+    <body onload="defaultValues()" style="width: 100%; height: 100%; margin: 0;">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="bundle.js"></script>
         <script src="v3.js"></script>
@@ -16,7 +17,7 @@
             integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
             crossorigin=""></script>
         <h1>Interrail Rechner</h1>
-        <div style="width: auto; height: auto; backgroud-color: lightgrey;">
+        <div style="width: auto; height: auto; background-color: lightgrey; position: sticky; top: 0; width: 100%;">
             <button type="button" id="but_calc" class="button" onclick="calculate()" style="background-color: green;">Route berechnen!</button>
             <button type="button" id="but_setl" class="button" onclick="setDemoRoute('long')" style="background-color: grey;">Lange Route laden</button>
             <button type="button" id="but_sets" class="button" onclick="setDemoRoute('short')" style="background-color: grey;">Kurze Route laden</button>
@@ -24,12 +25,12 @@
         <div style="width: 100%; height: 450px;">
             <div class="input">
                 <div id="citiesdiv">
-                    <h3>Zieleingabe</a></h3>
-                    <textarea onkeypress="updateDestinations()" id="cities" name="message" rows="18" cols="20" style="font-size: 16px;">Ziele eingeben!</textarea>
+                    <h3>Zieleingabe</h3>
+                    <textarea onkeyup="updateDestinations()" id="cities" name="message" rows="18" cols="20" style="font-size: 16px;">Ziele eingeben!</textarea>
                 </div>
             </div>
             
-            <div class="input">
+            <div class="input" style="overflow: auto;">
                 <div id="timesdiv">
                     <h3>Abfahrtszeiten</h3>    
                 </div>                    
@@ -40,7 +41,7 @@
 
                 </div>
             </div>
-            <div class="input">
+            <div class="input" style="display: none;">
                 <h3>Log</h3>
                 <div id="progress">
                     Fortschrittslog wird hier angezeigt.<br>
@@ -48,10 +49,6 @@
                 </div>
             </div>
         </div>
-        
-        
-        
-        <br>
         <table class="journey" id="journey">
             <thead>
                 <tr></tr> <!-- <th>Train 1</th><th>Train 2</th><th>Train 3</th><th>Train 4</th><th>Train 5</th><th>Train 6</th>-->

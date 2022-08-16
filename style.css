@@ -35,11 +35,12 @@ body {
     min-width: 170px;
 }
 #timesdiv {
-    min-width: 220px;
+    min-width: 400px;
+    overflow: auto;
 }
 #progress {
     width: 400px;
-    height: 350px;
+    height: 400px;
     overflow: auto;
 }
 #mapdiv {
