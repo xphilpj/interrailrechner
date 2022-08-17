@@ -22,15 +22,46 @@ function getCookie(cname) {
 function defaultValues(){
     let listCities = ''
     let listTimes = ''
+
+    if(window.screen.availWidth < 1300){
+        toggleMap('hide')
+    }
+    document.getElementById('map').style.width = window.screen.availWidth - 10 - document.getElementById('timesdiv').width - document.getElementById('citiesdiv').style.width
+
     // Cookie erstellen
     if(document.cookie.length == 0){
         console.log('No cookie found!')
         document.cookie = 'cities=Braunschweig Hbf\nWarsaw Centralna\nWien;deps=2022-09-19T06:00:00+0200\n2022-09-21T06:00:00+0200'
     }
     
+    updateDestinations();
+    destinations = document.getElementById('cities').value.split('\n')
+
+    if(document.URL.search('cities=') != -1) {
+        destinations = document.URL.slice(document.URL.search('cities=') + 7, document.URL.search('&')).split('%20')
+        departures = document.URL.slice(document.URL.search('times=') + 6, document.URL.search('link=true') - 1 ).split('%20')
+        
+        let listCities = ''
+        let listTimes = departures
+        let datepickers = '<h3>Abfahrtszeiten</h3><table>'
+        for(let i=0; i < destinations.length; i++){
+            listCities += destinations[i]
+            if(i+1 < destinations.length){
+                listCities += '\n'
+            }
+        }
+        document.getElementById('cities').innerHTML = listCities//.slice(0, listCities.length - 4)
+        for(let i=0; i<listTimes.length; i++){
+            datepickers += '<tr><td>' + destinations[i] + '</td><td><input type="datetime-local" class="datepicker" id="dep' + i + '" value="' + listTimes[i] + '" min="2022-09-19T00:00" max="2022-10-19T23:59"></td></tr>'            
+        }
+        datepickers += '</table>'
+        document.getElementById('timesdiv').innerHTML = datepickers
+        calculate();
+    }
+    
     // Daten aus Cookie extrahieren
-    listCities = document.cookie.split(';')[0]
-    listTimes = document.cookie.split(';')[1]
+    // listCities = document.cookie.split(';')[0]
+    // listTimes = document.cookie.split(';')[1]
 
     // Falls es Probleme mit dem Cookie gab
     //if(listCities.length == 0 || listTimes.length == 0 || document.cookie = null){
@@ -64,12 +95,16 @@ async function calculate() {
     let destinations_lat = []
     let ids = []
     let route = ''
+    let tripdays = 0
+    let triphours = 0
+    let tripminutes = 0
+    let tripdistance = 0
 
     // Checken, ob Zeiten abgegeben wurden
-    const updatereq = (destinations.length==document.getElementById('cities').value.split('\n').length)
-    console.log(destinations.length)
+    // const updatereq = (destinations.length==document.getElementById('cities').value.split('\n').length)
+    // console.log(destinations.length)
     if(destinations.length != document.getElementById('cities').value.split('\n').length){
-        console.log('Updating Timepickers')
+        // console.log('Updating Timepickers')
         updateDestinations();
         return null
     }
@@ -100,12 +135,13 @@ async function calculate() {
             let content;
             let traveltimehour = 0;
             let traveltimeminute = 0;
+            let traveldistance = 0;
             let route2;
             log += ('(' + (i) + '/' + (destinations.length-1) +') Berechne Route ' + destinations[i-1] + ' nach ' + destinations[i] + '...<br>')
             document.getElementById('but_calc').innerHTML = ('(' + (i) + '/' + (destinations.length-1) +') Berechne Route ' + destinations[i-1] + ' nach ' + destinations[i] + '...<br>')
             document.getElementById('progress').innerHTML = log 
             let response = await window.interrail.journeys(ids[ids.length-2],ids[ids.length-1], { when: new Date(departures[i-1])}).then(data => content = data[0]['legs'])
-            console.log(content[0])
+            //console.log(content[0])
             for(let j = 0; j<content.length; j++){
                 const trainid = content[j]['line']['id']
                 const trainname = content[j]['line']['name']
@@ -134,6 +170,7 @@ async function calculate() {
                 var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
                 var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
                 distanz = Math.round(R * c);
+                traveldistance += distanz;
 
                 // Zeitberechnung
                 const daydep = parseInt(timedeparture[0].slice(8,10))
@@ -169,11 +206,24 @@ async function calculate() {
                 traveltimehour += 1
                 traveltimeminute -= 60
             }
-            route1 = ('<tr style="background-color: #ededed; vertical-align: top;"><td><h3>#' + i + '</h3><h4>' + destinations[i-1] + ' → ' + destinations[i] + '</h4>Fahrzeit: ' + traveltimehour + ':' + traveltimeminute + '</td>')
+            tripdistance += traveldistance;
+            tripminutes += traveltimeminute
+            triphours += traveltimehour
+            route1 = ('<tr style="background-color: #ededed; vertical-align: top;"><td><h3>#' + i + '</h3><h4>' + destinations[i-1] + ' → ' + destinations[i] + '</h4>Fahrzeit: ' + traveltimehour + ':' + traveltimeminute + '<br>Strecke: ' + traveldistance + 'km</td>')
             route += (route1 + route2 + '</tr>')
         }
         $('.journey tbody').html(route);
     }
+    // Gesamtzeit & Strecke berechnen
+    while(tripminutes >= 60){
+        triphours += 1
+        tripminutes -= 60
+    }
+    while(triphours >= 24){
+        tripdays += 1
+        triphours -= 24
+    }
+
     $('.journey tbody').html(route);
     drawMap(destinations_long, destinations_lat)
     document.getElementById('but_calc').innerHTML = 'Fertig!'
@@ -182,6 +232,7 @@ async function calculate() {
     var objDiv = document.getElementById("progress");
     objDiv.scrollTop = objDiv.scrollHeight;
     document.getElementById('but_calc').innerHTML = 'Route berechnen!'
+    document.getElementById('infopanel').innerHTML = ('Deine Reise mit ' + (destinations.length-2) + ' Städten: ' + tripdistance + 'km in ' + tripdays + 'd' + triphours + 'h' + tripminutes + 'm')
     document.title = 'Deine Reise mit ' + (destinations.length-2) + ' Städten'
 }
 
@@ -266,4 +317,54 @@ function updateDestinations(){
     }
     datepickers += '</table>'
     document.getElementById('timesdiv').innerHTML = datepickers
+}
+
+function safeToLink(){
+    // Variablen
+    
+    let outputUrl = ''
+    let stringCities = '?cities='
+    let stringTimes = '&times='
+
+    if(document.URL.search('\\?') == -1){
+        outputUrl = document.URL
+    }
+    else{
+        outputUrl = document.URL.slice(0,document.URL.search('\\?'))
+    }
+
+    updateDestinations();
+    destinations = document.getElementById('cities').value.split('\n')
+    for(let i=0; i<destinations.length; i++){
+        const requiredid = ('dep' + i)
+        departures.push(document.getElementById(requiredid).value)
+    }
+    
+    // Arrays in Strings konvertieren
+    for(let i=0; i<destinations.length; i++){
+        stringCities += destinations[i]
+        stringTimes += departures[i]
+        if(i+1<destinations.length)
+        {
+            stringCities += '%20'
+            stringTimes += '%20'
+        }
+    }
+    outputUrl += stringCities + stringTimes + '&link=true'
+    console.log(outputUrl)
+    window.location.href = outputUrl
+    document.getElementById('but_saves').innerHTML = 'Kannst mich speichern'
+}
+
+function toggleMap(newstate){
+    if(newstate == 'hide'){
+        document.getElementById('map').style.display = 'none';
+        document.getElementById('maphide').style.display = 'none';
+        document.getElementById('mapshow').style.display = 'inline';
+    }
+    else{
+        document.getElementById('map').style.display = 'block';
+        document.getElementById('maphide').style.display = 'inline';
+        document.getElementById('mapshow').style.display = 'none';
+    }
 }

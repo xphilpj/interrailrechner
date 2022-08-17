@@ -21,31 +21,39 @@
             <button type="button" id="but_calc" class="button" onclick="calculate()" style="background-color: green;">Route berechnen!</button>
             <button type="button" id="but_setl" class="button" onclick="setDemoRoute('long')" style="background-color: grey;">Lange Route laden</button>
             <button type="button" id="but_sets" class="button" onclick="setDemoRoute('short')" style="background-color: grey;">Kurze Route laden</button>
+            <button type="button" id="but_saves" class="button" onclick="safeToLink()" style="background-color: grey;">Route als Link speichern</button>
+            <button type="button" id="infopanel" class="button" style="background-color: grey;">Noch kein Trip berechnet :(</button>
+            <button type="button" id="maphide" class="button" onclick="toggleMap('hide')" style="background-color: grey; display: inline;">Hide Map</button>
+                        <button type="button" id="mapshow" class="button" onclick="toggleMap('show')" style="background-color: grey; display: none;">Show Map</button>
         </div>
-        <div style="width: 100%; height: 450px;">
-            <div class="input">
-                <div id="citiesdiv">
-                    <h3>Zieleingabe</h3>
-                    <textarea onkeyup="updateDestinations()" id="cities" name="message" rows="18" cols="20" style="font-size: 16px;">Ziele eingeben!</textarea>
+        <div id="totalinput" style="width: 100%; height: 450px; position: sticky; top: 20px;">
+            <div style="width: 100%; height: 450px;">
+                <div class="input">
+                    <div id="citiesdiv">
+                        <h3>Zieleingabe</h3>
+                        <textarea onkeyup="updateDestinations()" id="cities" name="message" rows="18" cols="20" style="font-size: 16px;">Ziele eingeben!</textarea>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="input" style="overflow: auto;">
-                <div id="timesdiv">
-                    <h3>Abfahrtszeiten</h3>    
-                </div>                    
-            </div>
-            <div class="input" id="mapdiv">
-                <h3>Map</h3>
-                <div id="map">
+                <div class="input" style="overflow: auto;">
+                    <div id="timesdiv">
+                        <h3>Abfahrtszeiten</h3>    
+                    </div>                    
+                </div>
+                <div class="input" id="mapdiv">
+                    <span style="display: inline;">
+                        <h3>Map</h3>
+                        
+                    </span>
+                    <div id="map">
 
+                    </div>
                 </div>
-            </div>
-            <div class="input" style="display: none;">
-                <h3>Log</h3>
-                <div id="progress">
-                    Fortschrittslog wird hier angezeigt.<br>
-                    <!--<textarea id="progress" name="progress" rows="20" cols="60">Progress</textarea>-->
+                <div class="input" style="display: none;">
+                    <h3>Log</h3>
+                    <div id="progress">
+                        Fortschrittslog wird hier angezeigt.<br>
+                        <!--<textarea id="progress" name="progress" rows="20" cols="60">Progress</textarea>-->
+                    </div>
                 </div>
             </div>
         </div>
