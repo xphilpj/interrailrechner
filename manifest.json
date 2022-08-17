@@ -1,0 +1,15 @@
+{
+    "name": "InterRailPlanner",
+    "short_name": "IRP",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#fdfdfd",
+    "theme_color": "#db4938",
+    "orientation": "portrait-primary",
+    "icons": [
+      {
+        "src": "https://www.interrail.eu//etc/designs/eurail/favicon/Eurail_Favicon_96px.png",
+        "type": "image/png", "sizes": "96x96"
+      }
+    ]
+  }

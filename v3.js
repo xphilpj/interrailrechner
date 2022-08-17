@@ -59,27 +59,20 @@ function defaultValues(){
         calculate();
     }
     
-    // Daten aus Cookie extrahieren
-    // listCities = document.cookie.split(';')[0]
-    // listTimes = document.cookie.split(';')[1]
-
-    // Falls es Probleme mit dem Cookie gab
-    //if(listCities.length == 0 || listTimes.length == 0 || document.cookie = null){
-    
     map = L.map('map').setView([52.269, 10.526], 3);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(map);
     
-    //}
-    
-    // Füllen der Listen
-    
-
-    // Initiale Berechnung starten
-    //calculate();
-    //drawMap();
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function() {
+          navigator.serviceWorker
+            .register("/serviceWorker.js")
+            .then(res => console.log("service worker registered"))
+            .catch(err => console.log("service worker not registered", err))
+        })
+      }
 }
 
 async function fetchStation(name){
@@ -352,6 +345,10 @@ function safeToLink(){
     }
     outputUrl += stringCities + stringTimes + '&link=true'
     console.log(outputUrl)
+    let createBookmark = browser.bookmarks.create({
+        title: document.title,
+        url: outputUrl
+      });
     window.location.href = outputUrl
     document.getElementById('but_saves').innerHTML = 'Kannst mich speichern'
 }
